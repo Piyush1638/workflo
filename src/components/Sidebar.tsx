@@ -1,5 +1,6 @@
 import React from "react";
 import Image from "next/image";
+import AddNewButton from "./AddNewButton";
 
 const Sidebar = () => {
   return (
@@ -45,16 +46,13 @@ const Sidebar = () => {
         </button>
       </div>
 
-      <div className="flex flex-col p-4">
+      <div className="flex flex-col p-4 gap-2">
         <SidebarItem icon="/svg/sidebar/home.svg" label="Home" />
         <SidebarItem icon="/svg/sidebar/boards.svg" label="Boards" />
         <SidebarItem icon="/svg/sidebar/settings.svg" label="Settings" />
         <SidebarItem icon="/svg/sidebar/teams.svg" label="Teams" />
         <SidebarItem icon="/svg/sidebar/analytics.svg" label="Analytics" />
-        <button className="mt-4 w-full bg-gradient-to-b from-[#4C38C2] to-[#2F2188] text-white py-2 px-4 rounded-md text-left flex items-center justify-center gap-2">
-          Create new task{" "}
-          <Image src={"/svg/create-new.svg"} alt="..." height={24} width={24} />
-        </button>
+        <AddNewButton bgColorAndFont="bg-gradient-to-b from-[#4C38C2] to-[#2F2188] shadow shadow-lg justify-center gap-2 mt-2" status="" buttonText="Create New Task"/>
       </div>
       <div className="mt-auto p-4">
         <button className="flex items-center w-full py-2 px-4 bg-gray-100 rounded-md text-left">

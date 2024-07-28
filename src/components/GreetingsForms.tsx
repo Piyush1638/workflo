@@ -1,5 +1,6 @@
 import Image from "next/image";
 import React from "react";
+import AddNewButton from "./AddNewButton";
 
 const GreetingsForms = () => {
   return (
@@ -51,7 +52,7 @@ const GreetingsForms = () => {
             <Functionalities name="Automation" icon="/svg/automation.svg" />
             <Functionalities name="Filter" icon="/svg/filter.svg" />
             <Functionalities name="Share" icon="/svg/share.svg" />
-            <button className="bg-gradient-to-b from-[#4C38C2] to-[#2F2188] flex items-center gap-2 p-2 rounded-lg text-white font-medium">Create new <Image src={"/svg/create-new.svg"} alt="" height={21.5} width={21.5}/></button>
+            <AddNewButton buttonText="Create New" status="" bgColorAndFont="bg-gradient-to-b from-[#4C38C2] to-[#2F2188] justify-center gap-2"/>
           </div>
         </div>
       </div>
