@@ -106,7 +106,7 @@ const LoginPage: React.FC = () => {
           )}
         </form>
         <p className="text-center mt-4">
-          Don't have an account?{' '}
+          Don&apos;t have an account?{' '}
           <Link href="/sign-up" className="text-[#0054A1]">
             Create a new account.
           </Link>
