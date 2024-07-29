@@ -51,7 +51,7 @@ const LoginPage: React.FC = () => {
 
   return (
     <div className="flex items-center justify-center h-screen bg-gradient-to-t from-[#AFA3FF] to-white">
-      <div className="bg-white p-8 rounded shadow-md max-w-lg w-full">
+      <div className="bg-white p-8 rounded shadow-md max-w-lg w-full mx-4">
         <h1 className="text-2xl font-bold text-center mb-6">
           Welcome to <span className="text-purple-600">Workflo</span>!
         </h1>

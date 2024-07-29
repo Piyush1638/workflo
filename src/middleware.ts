@@ -3,7 +3,7 @@ import type { NextRequest } from "next/server";
 
 export function middleware(request: NextRequest) {
   const pathName = request.nextUrl.pathname;
-  const isPublicPath = pathName === "/sign-in" || pathName === "/sign-up";
+  const isPublicPath = pathName === "/sign-in" || pathName === "/sign-up" || pathName === "/verifyemail";
   const token = request.cookies.get('token')?.value;
 
   // Redirect to sign-in if trying to access a protected route without a token
@@ -18,5 +18,5 @@ export function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/sign-in", "/sign-up", "/"],
+  matcher: ["/sign-in", "/sign-up", "/", "/verifyemail"],
 };

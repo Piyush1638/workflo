@@ -10,12 +10,23 @@ interface Data{
   }
 }
 
+const getGreeting = () => {
+  const hour = new Date().getHours();
+  if (hour < 12) {
+    return "Good Morning";
+  } else if (hour < 18) {
+    return "Good Afternoon";
+  } else {
+    return "Good Evening";
+  }
+};
+
 const GreetingsForms = () => {
   const userName = useSelector((data: Data) => data.userInfo.name);
   return (
     <div className="flex flex-col gap-4">
       <h1 className="font-semibold text-5xl leading-[3.6rem] font-barlow">
-        Good morning, {userName}!
+        {getGreeting()+", "+userName}!
       </h1>
       {/* Here is the feature cards */}
       <div className="flex gap-2">

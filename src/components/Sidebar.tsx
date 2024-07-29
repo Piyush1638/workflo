@@ -9,7 +9,6 @@ import { setUserInfo } from "@/lib/features/userInfoSlice";
 import { useDispatch } from "react-redux";
 import type { AppDispatch } from "@/lib/store"; // Make sure to import your store's type
 
-
 interface UserInfo {
   name: string;
   email: string;
@@ -24,13 +23,21 @@ const Sidebar = () => {
 
   const logout = async () => {
     try {
+      setLoading(true);
       const response = await axios.get("/api/users/sign-out");
       if (response.data.success) {
         router.push("/sign-in");
       }
     } catch (error) {
       console.error("Logout failed");
+    } finally {
+      setLoading(false);
     }
+  };
+
+  const getFirstTwoWords = (name: string) => {
+    const words = name.split(" ");
+    return words.slice(0, 2).join(" ");
   };
 
   useEffect(() => {
@@ -61,8 +68,12 @@ const Sidebar = () => {
           width={40}
           height={40}
         /> */}
-        <div className="h-10 w-10 rounded-full flex items-center justify-center p-1 text-2xl border-2 border-gray-400">{userInfo?.name[0]}</div>
-        <h3 className="font-medium text-xl leading-6">{userInfo?.name}</h3>
+        <div className="h-10 w-10 rounded-full flex items-center justify-center p-1 text-2xl border-2 border-gray-400">
+          {userInfo?.name[0]}
+        </div>
+        <h3 className="font-medium text-xl leading-6">
+          {userInfo ? getFirstTwoWords(userInfo.name) : ""}
+        </h3>{" "}
       </div>
 
       <div className="flex items-center justify-between px-4">
