@@ -1,19 +1,68 @@
-import React from "react";
+"use client";
+import React, { useEffect, useState } from "react";
 import Image from "next/image";
 import AddNewButton from "./AddNewButton";
+import axios from "axios";
+import { useRouter } from "next/navigation";
+import Loading from "./Loading";
+import { setUserInfo } from "@/lib/features/userInfoSlice";
+import { useDispatch } from "react-redux";
+import type { AppDispatch } from "@/lib/store"; // Make sure to import your store's type
+
+
+interface UserInfo {
+  name: string;
+  email: string;
+  id: string;
+}
 
 const Sidebar = () => {
+  const dispatch: AppDispatch = useDispatch();
+  const router = useRouter();
+  const [loading, setLoading] = useState<boolean>(false);
+  const [userInfo, setUserInfoState] = useState<UserInfo | null>(null);
+
+  const logout = async () => {
+    try {
+      const response = await axios.get("/api/users/sign-out");
+      if (response.data.success) {
+        router.push("/sign-in");
+      }
+    } catch (error) {
+      console.error("Logout failed");
+    }
+  };
+
+  useEffect(() => {
+    const fetchUserInfo = async () => {
+      try {
+        const res = await axios.get("/api/users/userInfo");
+        const { name, email, _id: id } = res.data.user;
+        dispatch(setUserInfo({ name, email, id }));
+        setUserInfoState({ name, email, id });
+      } catch (error: any) {
+        console.error(
+          "Error fetching user info:",
+          error.response ? error.response.data : error.message
+        );
+      }
+    };
+
+    fetchUserInfo();
+  }, [dispatch]);
+
   return (
     <div className="flex flex-col h-screen min-w-64 bg-white border-r shadow-sm fixed left-0">
       <div className="flex items-center p-4 gap-2">
-        <Image
+        {/* <Image
           src="/svg/Profile-img.svg" // Update with actual path
           alt="Profile Picture"
           className="rounded-full"
           width={40}
           height={40}
-        />
-        <h3 className="font-medium text-xl leading-6">Joe Biden</h3>
+        /> */}
+        <div className="h-10 w-10 rounded-full flex items-center justify-center p-1 text-2xl border-2 border-gray-400">{userInfo?.name[0]}</div>
+        <h3 className="font-medium text-xl leading-6">{userInfo?.name}</h3>
       </div>
 
       <div className="flex items-center justify-between px-4">
@@ -41,9 +90,16 @@ const Sidebar = () => {
             className="cursor-pointer"
           />
         </div>
-        <button className="bg-[#F4F4F4] text-[#797979] font-normal p-2 rounded">
-          Logout
-        </button>
+        {loading ? (
+          <Loading />
+        ) : (
+          <button
+            onClick={logout}
+            className="bg-[#F4F4F4] text-[#797979] font-normal p-2 rounded"
+          >
+            Logout
+          </button>
+        )}
       </div>
 
       <div className="flex flex-col p-4 gap-2">
@@ -52,7 +108,11 @@ const Sidebar = () => {
         <SidebarItem icon="/svg/sidebar/settings.svg" label="Settings" />
         <SidebarItem icon="/svg/sidebar/teams.svg" label="Teams" />
         <SidebarItem icon="/svg/sidebar/analytics.svg" label="Analytics" />
-        <AddNewButton bgColorAndFont="bg-gradient-to-b from-[#4C38C2] to-[#2F2188] shadow shadow-lg justify-center gap-2 mt-2" status="" buttonText="Create New Task"/>
+        <AddNewButton
+          bgColorAndFont="bg-gradient-to-b from-[#4C38C2] to-[#2F2188] shadow shadow-lg justify-center gap-2 mt-2"
+          status=""
+          buttonText="Create New Task"
+        />
       </div>
       <div className="mt-auto p-4">
         <button className="flex items-center w-full py-2 px-4 bg-gray-100 rounded-md text-left">

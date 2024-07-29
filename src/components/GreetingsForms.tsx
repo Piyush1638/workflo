@@ -1,12 +1,21 @@
+"use client"
 import Image from "next/image";
 import React from "react";
 import AddNewButton from "./AddNewButton";
+import { useSelector } from "react-redux";
+
+interface Data{
+  userInfo:{
+    name:string;
+  }
+}
 
 const GreetingsForms = () => {
+  const userName = useSelector((data: Data) => data.userInfo.name);
   return (
     <div className="flex flex-col gap-4">
       <h1 className="font-semibold text-5xl leading-[3.6rem] font-barlow">
-        Good morning, Joe!
+        Good morning, {userName}!
       </h1>
       {/* Here is the feature cards */}
       <div className="flex gap-2">

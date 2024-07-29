@@ -1,16 +1,52 @@
-"use client"
+"use client";
+import Loading from '@/components/Loading';
+import axios from 'axios';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import React, { useState } from 'react';
 
-const LoginPage: React.FC = () => {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [showPassword, setShowPassword] = useState(false);
+interface User {
+  email: string;
+  password: string;
+}
 
-  const handleLogin = (e: React.FormEvent) => {
+const LoginPage: React.FC = () => {
+  const router = useRouter();
+  const [user, setUser] = useState<User>({
+    email: '',
+    password: '',
+  });
+  const [showPassword, setShowPassword] = useState(false);
+  const [loading, setLoading] = useState<boolean>(false);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
+
+  const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setUser({
+      ...user,
+      [e.target.name]: e.target.value,
+    });
+  };
+
+  const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
-    // Handle login logic here
-    console.log('Logging in with:', { email, password });
+    setErrorMessage(null); // Reset the error message
+    try {
+      setLoading(true);
+      const response = await axios.post("/api/users/sign-in", user);
+      console.log(response.data);
+      if (response.data.status === 201) {
+        router.push('/');
+      }
+    } catch (error: any) {
+      console.log("Error: ", error.message);
+      if (error.response && error.response.status === 400) {
+        setErrorMessage("Invalid credentials. Please try again.");
+      } else {
+        setErrorMessage("An error occurred. Please try again later.");
+      }
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -23,8 +59,9 @@ const LoginPage: React.FC = () => {
           <div className="mb-4">
             <input
               type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
+              value={user.email}
+              name='email'
+              onChange={onChange}
               className="w-full p-2 border rounded mb-2 outline-none"
               placeholder="Email"
               required
@@ -33,8 +70,9 @@ const LoginPage: React.FC = () => {
           <div className="mb-4 relative">
             <input
               type={showPassword ? 'text' : 'password'}
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
+              value={user.password}
+              name='password'
+              onChange={onChange}
               className="w-full p-2 border rounded outline-none"
               placeholder="Password"
               required
@@ -51,12 +89,21 @@ const LoginPage: React.FC = () => {
               )}
             </button>
           </div>
-          <button
-            type="submit"
-            className="w-full bg-gradient-to-t from-[#2F2188] to-[#4C38C2] text-xl shadow-lg shadow-gray-400 text-white py-2 rounded hover:bg-purple-700"
-          >
-            Login
-          </button>
+          {errorMessage && (
+            <p className="text-center text-red-500">
+              {errorMessage}
+            </p>
+          )}
+          {loading ? (
+            <Loading />
+          ) : (
+            <button
+              type="submit"
+              className="w-full bg-gradient-to-t from-[#4B36CC] to-[#9C93D4] text-xl text-white py-2 rounded hover:bg-purple-700 shadow shadow-gray-400"
+            >
+              Sign in
+            </button>
+          )}
         </form>
         <p className="text-center mt-4">
           Don't have an account?{' '}

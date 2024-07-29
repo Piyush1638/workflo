@@ -1,17 +1,59 @@
-"use client"
-import Link from 'next/link';
-import React, { useState } from 'react';
+"use client";
+import Link from "next/link";
+import React, { useState } from "react";
+import { useRouter } from "next/navigation";
+import axios from "axios";
+import Loading from "@/components/Loading";
+
+interface User {
+  name: string;
+  email: string;
+  password: string;
+}
+
+interface ServerResponse {
+  message: string;
+  success?: boolean;
+}
 
 const SignUpPage: React.FC = () => {
-  const [name, setName] = useState('');
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const router = useRouter();
+  const [user, setUser] = useState<User>({
+    name: "",
+    email: "",
+    password: "",
+  });
   const [showPassword, setShowPassword] = useState(false);
+  const [serverResponse, setServerResponse] = useState<ServerResponse | null>(null);
+  const [loading, setLoading] = useState(false);
 
-  const handleSignUp = (e: React.FormEvent) => {
+  const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setUser({
+      ...user,
+      [e.target.name]: e.target.value,
+    });
+  };
+
+  const handleSignUp = async (e: React.FormEvent) => {
     e.preventDefault();
-    // Handle sign-up logic here
-    console.log('Signing up with:', { name, email, password });
+    try {
+      setLoading(true);
+      const response = await axios.post("/api/users/sign-up", user);
+      console.log("Server Response:", response.data);
+      setServerResponse(response.data);
+
+      if (response.data.success) {
+        console.log("User registered successfully");
+        router.push("/sign-in");
+      } else {
+        console.log("Error:", response.data.message);
+      }
+    } catch (error: any) {
+      console.log("Error:", error.message);
+      setServerResponse({ message: error.message, success: false });
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -24,8 +66,9 @@ const SignUpPage: React.FC = () => {
           <div className="mb-4">
             <input
               type="text"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
+              value={user.name}
+              name="name"
+              onChange={onChange}
               className="w-full p-2 border rounded mb-2 outline-none"
               placeholder="Name"
               required
@@ -34,8 +77,9 @@ const SignUpPage: React.FC = () => {
           <div className="mb-4">
             <input
               type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
+              value={user.email}
+              name="email"
+              onChange={onChange}
               className="w-full p-2 border rounded mb-2 outline-none"
               placeholder="Email"
               required
@@ -43,9 +87,10 @@ const SignUpPage: React.FC = () => {
           </div>
           <div className="mb-4 relative">
             <input
-              type={showPassword ? 'text' : 'password'}
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
+              type={showPassword ? "text" : "password"}
+              name="password"
+              value={user.password}
+              onChange={onChange}
               className="w-full p-2 border rounded outline-none"
               placeholder="Password"
               required
@@ -55,22 +100,27 @@ const SignUpPage: React.FC = () => {
               className="absolute inset-y-0 right-0 px-3 flex items-center"
               onClick={() => setShowPassword(!showPassword)}
             >
-              {showPassword ? (
-                <span>👁️</span>
-              ) : (
-                <span>👁️‍🗨️</span>
-              )}
+              {showPassword ? <span>👁️</span> : <span>👁️‍🗨️</span>}
             </button>
           </div>
-          <button
-            type="submit"
-            className="w-full bg-gradient-to-t from-[#4B36CC] to-[#9C93D4] text-xl text-white py-2 rounded hover:bg-purple-700 shadow shadow-gray-400"
-          >
-            Sign up
-          </button>
+          {serverResponse && (
+            <p className={`text-center text-${serverResponse.success ? 'green' : 'red'}-500`}>
+              {serverResponse.message}
+            </p>
+          )}
+          {loading ? (
+            <Loading />
+          ) : (
+            <button
+              type="submit"
+              className="w-full bg-gradient-to-t from-[#4B36CC] to-[#9C93D4] text-xl text-white py-2 rounded hover:bg-purple-700 shadow shadow-gray-400"
+            >
+              Sign up
+            </button>
+          )}
         </form>
         <p className="text-center mt-4">
-          Already have an account?{' '}
+          Already have an account?{" "}
           <Link href="/sign-in" className="text-[#0054A1]">
             Log in.
           </Link>
