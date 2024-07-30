@@ -4,17 +4,7 @@ import React, { useState } from "react";
 import { useRouter } from "next/navigation";
 import axios from "axios";
 import Loading from "@/components/Loading";
-
-interface User {
-  name: string;
-  email: string;
-  password: string;
-}
-
-interface ServerResponse {
-  message: string;
-  success?: boolean;
-}
+import { ServerResponse, User } from "@/lib/interfaces/interfaces";
 
 const SignUpPage: React.FC = () => {
   const router = useRouter();
@@ -154,7 +144,8 @@ const SignUpPage: React.FC = () => {
             </h3>
             <p className="text-lg text-green-700 font-semibold">
               We have sent you an verification email on your registered email,
-              kindly verify your email. If you face any problem then you can simply login without verification.
+              kindly verify your email. If you face any problem then you can
+              simply login without verification.
             </p>
           </div>
         )}

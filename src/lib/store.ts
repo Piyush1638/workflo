@@ -1,10 +1,16 @@
 import { configureStore } from '@reduxjs/toolkit';
 import userInfoReducer from "@/lib/features/userInfoSlice"
+import todoReducer from "@/lib/features/todoSlice";
+import searchReducer from "@/lib/features/searchSlice";
+
 
 export const makeStore = () => {
   return configureStore({
     reducer: {
       userInfo: userInfoReducer,
+      todos: todoReducer,
+      search: searchReducer,
+
     },
   })
 }

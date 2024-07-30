@@ -2,14 +2,9 @@ import nodemailer from "nodemailer";
 import bcryptjs from "bcryptjs";
 import User from "@/models/userModel";
 import { connect } from "@/dbConfig/dbConfig";
+import { SendEmailPropsType } from "@/lib/interfaces/interfaces";
 
 connect();
-
-interface SendEmailPropsType {
-  email: string;
-  emailType: string;
-  userId: string;
-}
 
 export const sendEmail = async ({
   email,
@@ -43,7 +38,6 @@ export const sendEmail = async ({
       },
     });
 
-
     // Configure the email options
     const mailOptions = {
       from: "workflo30072024@gmail.com",
@@ -61,7 +55,6 @@ export const sendEmail = async ({
       } or copy and paste the link in your browser:<br/>
       ${process.env.DOMAIN}/verifyemail?token=${hashedToken}</p>`,
     };
-
 
     // Send the email
     const mailResponse = await transport.sendMail(mailOptions);

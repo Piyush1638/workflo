@@ -1,25 +1,16 @@
+// Sidebar.tsx
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import Image from "next/image";
 import AddNewButton from "./AddNewButton";
 import axios from "axios";
 import { useRouter } from "next/navigation";
 import Loading from "./Loading";
-import { setUserInfo } from "@/lib/features/userInfoSlice";
-import { useDispatch } from "react-redux";
-import type { AppDispatch } from "@/lib/store"; // Make sure to import your store's type
+import { UserInfo, SideBarItemProps } from "@/lib/interfaces/interfaces";
 
-interface UserInfo {
-  name: string;
-  email: string;
-  id: string;
-}
-
-const Sidebar = () => {
-  const dispatch: AppDispatch = useDispatch();
+const Sidebar = ({ userInfo }: { userInfo: UserInfo | null }) => {
   const router = useRouter();
   const [loading, setLoading] = useState<boolean>(false);
-  const [userInfo, setUserInfoState] = useState<UserInfo | null>(null);
 
   const logout = async () => {
     try {
@@ -40,34 +31,9 @@ const Sidebar = () => {
     return words.slice(0, 2).join(" ");
   };
 
-  useEffect(() => {
-    const fetchUserInfo = async () => {
-      try {
-        const res = await axios.get("/api/users/userInfo");
-        const { name, email, _id: id } = res.data.user;
-        dispatch(setUserInfo({ name, email, id }));
-        setUserInfoState({ name, email, id });
-      } catch (error: any) {
-        console.error(
-          "Error fetching user info:",
-          error.response ? error.response.data : error.message
-        );
-      }
-    };
-
-    fetchUserInfo();
-  }, [dispatch]);
-
   return (
     <div className="flex flex-col h-screen min-w-64 bg-white border-r shadow-sm fixed left-0">
       <div className="flex items-center p-4 gap-2">
-        {/* <Image
-          src="/svg/Profile-img.svg" // Update with actual path
-          alt="Profile Picture"
-          className="rounded-full"
-          width={40}
-          height={40}
-        /> */}
         <div className="h-10 w-10 rounded-full flex items-center justify-center p-1 text-2xl border-2 border-gray-400">
           {userInfo?.name[0]}
         </div>
@@ -144,11 +110,6 @@ const Sidebar = () => {
 };
 
 export default Sidebar;
-
-interface SideBarItemProps {
-  icon: string;
-  label: string;
-}
 
 const SidebarItem: React.FC<SideBarItemProps> = ({ icon, label }) => {
   return (

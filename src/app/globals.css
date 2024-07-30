@@ -69,3 +69,8 @@
     @apply bg-background text-foreground;
   }
 }
+
+.task_card:active{
+   opacity: 0.5;
+   border: 1px solid black;
+}

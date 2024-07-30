@@ -2,7 +2,8 @@
 import Image from "next/image";
 import React from "react";
 import AddNewButton from "./AddNewButton";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { setSearchQuery } from "@/lib/features/searchSlice";
 
 interface Data{
   userInfo:{
@@ -22,7 +23,17 @@ const getGreeting = () => {
 };
 
 const GreetingsForms = () => {
+
+
+  const dispatch = useDispatch();
   const userName = useSelector((data: Data) => data.userInfo.name);
+  const searchQuery = useSelector((state: { search: { query: string } }) => state.search.query);
+
+  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    dispatch(setSearchQuery(e.target.value));
+  };
+
+
   return (
     <div className="flex flex-col gap-4">
       <h1 className="font-semibold text-5xl leading-[3.6rem] font-barlow">
@@ -61,6 +72,8 @@ const GreetingsForms = () => {
             type="text"
             className="bg-none outline-none w-full"
             placeholder="Search"
+            value={searchQuery}
+            onChange={handleSearchChange}
           />
           <Image src={"/svg/search.svg"} alt="search" height={24} width={24} />
         </div>

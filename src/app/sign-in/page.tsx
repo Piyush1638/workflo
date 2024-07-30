@@ -1,20 +1,16 @@
 "use client";
-import Loading from '@/components/Loading';
-import axios from 'axios';
-import Link from 'next/link';
-import { useRouter } from 'next/navigation';
-import React, { useState } from 'react';
-
-interface User {
-  email: string;
-  password: string;
-}
+import Loading from "@/components/Loading";
+import { User } from "@/lib/interfaces/interfaces";
+import axios from "axios";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import React, { useState } from "react";
 
 const LoginPage: React.FC = () => {
   const router = useRouter();
   const [user, setUser] = useState<User>({
-    email: '',
-    password: '',
+    email: "",
+    password: "",
   });
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState<boolean>(false);
@@ -35,7 +31,7 @@ const LoginPage: React.FC = () => {
       const response = await axios.post("/api/users/sign-in", user);
       console.log(response.data);
       if (response.data.status === 201) {
-        router.push('/');
+        router.push("/");
       }
     } catch (error: any) {
       console.log("Error: ", error.message);
@@ -60,7 +56,7 @@ const LoginPage: React.FC = () => {
             <input
               type="email"
               value={user.email}
-              name='email'
+              name="email"
               onChange={onChange}
               className="w-full p-2 border rounded mb-2 outline-none"
               placeholder="Email"
@@ -69,9 +65,9 @@ const LoginPage: React.FC = () => {
           </div>
           <div className="mb-4 relative">
             <input
-              type={showPassword ? 'text' : 'password'}
+              type={showPassword ? "text" : "password"}
               value={user.password}
-              name='password'
+              name="password"
               onChange={onChange}
               className="w-full p-2 border rounded outline-none"
               placeholder="Password"
@@ -82,17 +78,11 @@ const LoginPage: React.FC = () => {
               className="absolute inset-y-0 right-0 px-3 flex items-center"
               onClick={() => setShowPassword(!showPassword)}
             >
-              {showPassword ? (
-                <span>👁️</span>
-              ) : (
-                <span>👁️‍🗨️</span>
-              )}
+              {showPassword ? <span>👁️</span> : <span>👁️‍🗨️</span>}
             </button>
           </div>
           {errorMessage && (
-            <p className="text-center text-red-500">
-              {errorMessage}
-            </p>
+            <p className="text-center text-red-500">{errorMessage}</p>
           )}
           {loading ? (
             <Loading />
@@ -106,7 +96,7 @@ const LoginPage: React.FC = () => {
           )}
         </form>
         <p className="text-center mt-4">
-          Don&apos;t have an account?{' '}
+          Don&apos;t have an account?{" "}
           <Link href="/sign-up" className="text-[#0054A1]">
             Create a new account.
           </Link>

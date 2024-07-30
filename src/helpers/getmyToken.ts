@@ -1,11 +1,6 @@
 import { NextRequest } from "next/server";
 import jwt from "jsonwebtoken";
-
-interface DecodedToken {
-  id: string;
-  email: string;
-  name: string;
-}
+import { DecodedToken } from "@/lib/interfaces/interfaces";
 
 export const getMyToken = (request: NextRequest) => {
   const token = request.cookies.get("token")?.value || "";

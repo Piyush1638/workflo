@@ -1,4 +1,5 @@
 "use client";
+import axios from "axios";
 import {
   Dialog,
   DialogContent,
@@ -8,34 +9,81 @@ import {
 } from "@/components/ui/dialog";
 import Image from "next/image";
 import React, { useState } from "react";
+import { useSelector, useDispatch } from "react-redux";
+import { CustomProperty, Data, Fields } from "@/lib/interfaces/interfaces";
+import Field from "./Field";
+import { setTodosUpdated } from "@/lib/features/todoSlice"; // Import the action
 
-
-const AddNewButton = ({buttonText, bgColorAndFont, status}:{buttonText: string; bgColorAndFont: string; status:string;}) => {
-  const [customProperties, setCustomProperties] = useState<string[]>([]);
-  const [fields, setFields] = useState<{ [key: string]: string }>({
-    Status: "",
+const AddNewButton: React.FC<{
+  buttonText: string;
+  bgColorAndFont: string;
+  status: string;
+}> = ({ buttonText, bgColorAndFont, status }) => {
+  const userId = useSelector((data: Data) => data.userInfo.id);
+  const dispatch = useDispatch(); // Initialize dispatch
+  const [customProperties, setCustomProperties] = useState<CustomProperty[]>(
+    []
+  );
+  const [fields, setFields] = useState<Fields>({
+    Title: "",
+    Category: "",
     Priority: "",
     Deadline: "",
     Description: "",
   });
+  const [isOpen, setIsOpen] = useState(false);
 
   const handleAddCustomProperty = () => {
-    setCustomProperties([...customProperties, ""]);
+    setCustomProperties([...customProperties, { key: "", value: "" }]);
   };
 
-  const handleCustomPropertyChange = (index: number, value: string) => {
+  const handleCustomPropertyChange = (
+    index: number,
+    field: "key" | "value",
+    value: string
+  ) => {
     const newProperties = [...customProperties];
-    newProperties[index] = value;
+    newProperties[index] = { ...newProperties[index], [field]: value };
     setCustomProperties(newProperties);
   };
 
-  const handleFieldChange = (field: string, value: string) => {
+  const handleRemoveCustomProperty = (index: number) => {
+    setCustomProperties(customProperties.filter((_, i) => i !== index));
+  };
+
+  const handleFieldChange = (field: keyof Fields, value: string) => {
     setFields({ ...fields, [field]: value });
   };
 
+  const handleSubmit = async () => {
+    const todoData = {
+      title: fields.Title,
+      description: fields.Description,
+      category: fields.Category,
+      priority: fields.Priority,
+      deadline: fields.Deadline,
+      customProperties: customProperties.reduce((acc, curr) => {
+        acc[curr.key] = curr.value;
+        return acc;
+      }, {} as { [key: string]: string }),
+      userId: userId,
+    };
+
+    try {
+      const response = await axios.post("/api/submit-to-do", todoData);
+      dispatch(setTodosUpdated(true)); // Dispatch action to update todosUpdated
+      setIsOpen(false);
+    } catch (error) {
+      console.error("Error submitting todo:", error);
+    }
+  };
+
   return (
-    <Dialog>
-      <DialogTrigger className={`flex items-center ${bgColorAndFont} p-2 rounded-[8px] text-white shadow-md shadow-gray-400`}>
+    <Dialog open={isOpen} onOpenChange={setIsOpen}>
+      <DialogTrigger
+        className={`flex items-center ${bgColorAndFont} p-2 rounded-[8px] text-white shadow-md shadow-gray-400`}
+        onClick={() => setIsOpen(true)}
+      >
         {buttonText}
         <Image
           src={"/svg/create-new.svg"}
@@ -49,6 +97,10 @@ const AddNewButton = ({buttonText, bgColorAndFont, status}:{buttonText: string; 
           <DialogTitle>
             <input
               type="text"
+              value={fields.Title}
+              onChange={(event) =>
+                handleFieldChange("Title", event.target.value)
+              }
               className="text-5xl font-semibold bg-transparent outline-none border-none w-full"
               placeholder="Title"
             />
@@ -58,8 +110,8 @@ const AddNewButton = ({buttonText, bgColorAndFont, status}:{buttonText: string; 
           <Field
             iconSrc="/svg/Dialog/status.svg"
             label="Status"
-            value={status ? status : fields.Status}
-            onChange={(value) => handleFieldChange("Status", value)}
+            value={status ? (fields.Category = status) : fields.Category}
+            onChange={(value) => handleFieldChange("Category", value)}
           />
           <Field
             iconSrc="/svg/Dialog/priority.svg"
@@ -81,16 +133,32 @@ const AddNewButton = ({buttonText, bgColorAndFont, status}:{buttonText: string; 
           />
 
           {customProperties.map((property, index) => (
-            <input
-              key={index}
-              type="text"
-              className="border border-gray-300 rounded p-2 mb-4"
-              placeholder="Custom Property"
-              value={property}
-              onChange={(e) =>
-                handleCustomPropertyChange(index, e.target.value)
-              }
-            />
+            <div key={index} className="flex gap-4 mb-4 items-center">
+              <input
+                type="text"
+                className="border border-gray-300 rounded p-2 outline-none"
+                placeholder="Key"
+                value={property.key}
+                onChange={(e) =>
+                  handleCustomPropertyChange(index, "key", e.target.value)
+                }
+              />
+              <input
+                type="text"
+                className="border border-gray-300 rounded p-2 outline-none"
+                placeholder="Value"
+                value={property.value}
+                onChange={(e) =>
+                  handleCustomPropertyChange(index, "value", e.target.value)
+                }
+              />
+              <button
+                className="text-red-500 text-3xl font-bold"
+                onClick={() => handleRemoveCustomProperty(index)}
+              >
+                X
+              </button>
+            </div>
           ))}
 
           <button
@@ -105,6 +173,13 @@ const AddNewButton = ({buttonText, bgColorAndFont, status}:{buttonText: string; 
             />
             <span className="ml-2">Add custom property</span>
           </button>
+
+          <button
+            className="mt-6 bg-blue-500 text-white p-2 rounded"
+            onClick={handleSubmit}
+          >
+            Create
+          </button>
         </div>
         <div className="mt-6 text-sm text-gray-400">
           Start writing, or drag your own files here.
@@ -115,87 +190,3 @@ const AddNewButton = ({buttonText, bgColorAndFont, status}:{buttonText: string; 
 };
 
 export default AddNewButton;
-
-
-interface FieldProps {
-  iconSrc: string;
-  label: string;
-  value?: string;
-  onChange: (value: string) => void;
-}
-
-const Field: React.FC<FieldProps> = ({ iconSrc, label, value, onChange }) => {
-  let inputElement;
-
-  switch (label) {
-    case "Status":
-      inputElement = (
-        <select
-          value={value}
-          onChange={(e) => onChange(e.target.value)}
-          className=" bg-transparent rounded p-1 w-40"
-        >
-          <option value="" disabled>
-            Not Selected
-          </option>
-          <option value="To Do">To Do</option>
-          <option value="In Progress">In Progress</option>
-          <option value="Under Review">Under Review</option>
-          <option value="Finished">Finished</option>
-        </select>
-      );
-      break;
-    case "Priority":
-      inputElement = (
-        <select
-          value={value}
-          onChange={(e) => onChange(e.target.value)}
-          className="bg-transparent rounded p-1 w-40"
-        >
-          <option value="" disabled>
-            Not Selected
-          </option>
-          <option value="Urgent">Urgent</option>
-          <option value="Medium">Medium</option>
-          <option value="Low">Low</option>
-        </select>
-      );
-      break;
-    case "Deadline":
-      inputElement = (
-        <input
-          type="date"
-          value={value}
-          onChange={(e) => onChange(e.target.value)}
-          className="rounded p-1 bg-transparent outline-none w-40"
-        />
-      );
-      break;
-    case "Description":
-      inputElement = (
-        <textarea
-          value={value}
-          onChange={(e) => onChange(e.target.value)}
-          className="border rounded p-1 w-3/4 outline-none bg-transparent"
-          rows={3}
-          placeholder="Enter description"
-        />
-      );
-      break;
-    default:
-      inputElement = (
-        <span className="ml-auto text-gray-400">{value || "Not selected"}</span>
-      );
-      break;
-  }
-
-  return (
-    <div className="flex items-center justify-start gap-4 mb-4">
-      <div className={`flex ${label==="Description" ? "": "items-center"} gap-2 w-52`}>
-        <Image src={iconSrc} alt={label} height={24} width={24} />
-        <span className="ml-2 text-gray-600">{label}</span>
-      </div>
-      <>{inputElement}</>
-    </div>
-  );
-};
