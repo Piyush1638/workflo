@@ -7,12 +7,22 @@ import AddNewButton from "../AddNewButton";
 import { useSelector } from "react-redux";
 import { RootState } from "@/lib/store";
 
-const ToDo = () => {
-  const userTodo = useSelector((state: RootState) => state.todos["To Do"]);
+interface TodoColumnProps {
+  status: string;
+  title: string;
+  buttonText: string;
+  bgColorAndFont: string;
+}
+
+type TodoStatus = "To Do" | "In Progress" | "Under Review" | "Finished";
+
+
+const TodoColumn: React.FC<TodoColumnProps> = ({ status, title, buttonText, bgColorAndFont }) => {
+  const todos = useSelector((state: RootState) => state.todos[status as TodoStatus]);
   const searchQuery = useSelector((state: { search: { query: string } }) => state.search.query);
 
   // Filter todos based on search query
-  const filteredTodos = userTodo.filter(todo =>
+  const filteredTodos = todos.filter((todo: any) =>
     todo.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
     todo.description?.toLowerCase().includes(searchQuery.toLowerCase())
   );
@@ -22,14 +32,14 @@ const ToDo = () => {
   return (
     <div className="flex flex-col gap-4">
       <div className="flex items-start justify-between">
-        <h3 className="text-[#555555] text-xl">To Do</h3>
+        <h3 className="text-[#555555] text-xl">{title}</h3>
         <button>
           <Image src={"/svg/more.svg"} alt="" height={24} width={24} />
         </button>
       </div>
       <div className="flex flex-col gap-4">
         {filteredTodos.length > 0 ? (
-          filteredTodos.map((item, index) => (
+          filteredTodos.map((item: any, index: number) => (
             <Card props={item} key={index} />
           ))
         ) : showNoResultsMessage ? (
@@ -37,12 +47,12 @@ const ToDo = () => {
         ) : null}
       </div>
       <AddNewButton
-        buttonText={"Add New"}
-        status={"To Do"}
-        bgColorAndFont="bg-gradient-to-t from-[#202020] to-[#3A3A3A] justify-between"
+        buttonText={buttonText}
+        status={status}
+        bgColorAndFont={bgColorAndFont}
       />
     </div>
   );
 };
 
-export default ToDo;
+export default TodoColumn;

@@ -4,31 +4,35 @@ import User from "@/models/userModel";
 
 connect();
 
-export async function POST(request: NextRequest){
-
+export async function POST(request: NextRequest) {
   try {
-      const reqBody = await request.json()
-      const {token} = reqBody
+    const reqBody = await request.json();
+    const { token } = reqBody;
 
-      const user = await User.findOne({verifyToken: token, verifyTokenExpiry: {$gt: Date.now()}});
+    if (!token) {
+      console.error("Token is missing from request body");
+      return NextResponse.json({ error: "Token is required" }, { status: 400 });
+    }
 
-      if (!user) {
-          return NextResponse.json({error: "Invalid token"}, {status: 400})
-      }
+    const user = await User.findOne({ verifyToken: token, verifyTokenExpiry: { $gt: Date.now() } });
 
-      user.isVerified = true;
-      user.verifyToken = undefined;
-      user.verifyTokenExpiry = undefined;
-      await user.save();
-      
-      return NextResponse.json({
-          message: "Email verified successfully",
-          success: true
-      })
+    if (!user) {
+      console.error("No user found with the provided token or token is expired");
+      return NextResponse.json({ error: "Invalid or expired token" }, { status: 400 });
+    }
 
+    user.isVerified = true;
+    user.verifyToken = undefined;
+    user.verifyTokenExpiry = undefined;
+    await user.save();
 
-  } catch (error:any) {
-      return NextResponse.json({error: error.message}, {status: 500})
+    return NextResponse.json({
+      message: "Email verified successfully",
+      success: true
+    });
+
+  } catch (error: any) {
+    console.error("Error in verifying email:", error.message);
+    return NextResponse.json({ error: "Internal server error" }, { status: 500 });
   }
-
 }

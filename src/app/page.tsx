@@ -2,10 +2,6 @@
 
 import GreetingsForms from "@/components/GreetingsForms";
 import Sidebar from "@/components/Sidebar";
-import Finished from "@/components/todoCategories/Finished";
-import InProgress from "@/components/todoCategories/InProgress";
-import ToDo from "@/components/todoCategories/ToDo";
-import UnderReview from "@/components/todoCategories/UnderReview";
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { setTodos, setTodosUpdated } from "@/lib/features/todoSlice";
@@ -14,7 +10,8 @@ import type { AppDispatch } from "@/lib/store";
 import { useDispatch, useSelector } from "react-redux";
 import { UserInfo, TodoState } from "@/lib/interfaces/interfaces";
 import Loading from "@/components/Loading";
-import { DragDropContext, Droppable } from "react-beautiful-dnd";
+import { DragDropContext } from "react-beautiful-dnd";
+import TodoColumn from "@/components/todoCategories/TodoColumn";
 
 const Home = () => {
   const dispatch: AppDispatch = useDispatch();
@@ -114,12 +111,32 @@ const Home = () => {
                 </p>
               </div>
             ) : (
-                <>
-                  <ToDo />
-                  <InProgress />
-                  <UnderReview />
-                  <Finished />
-                </>
+              <>
+                <TodoColumn
+                  status="To Do"
+                  title="To Do"
+                  buttonText="Add New"
+                  bgColorAndFont="bg-gradient-to-t from-[#202020] to-[#3A3A3A] justify-between"
+                />
+                <TodoColumn
+                  status="In Progress"
+                  title="In Progress"
+                  buttonText="Add New"
+                  bgColorAndFont="bg-gradient-to-t from-[#202020] to-[#3A3A3A] justify-between"
+                />
+                <TodoColumn
+                  status="Under Review"
+                  title="Under Review"
+                  buttonText="Add New"
+                  bgColorAndFont="bg-gradient-to-t from-[#202020] to-[#3A3A3A] justify-between"
+                />
+                <TodoColumn
+                  status="Finished"
+                  title="Finished"
+                  buttonText="Add New"
+                  bgColorAndFont="bg-gradient-to-t from-[#202020] to-[#3A3A3A] justify-between"
+                />
+              </>
             )}
           </div>
         </DragDropContext>

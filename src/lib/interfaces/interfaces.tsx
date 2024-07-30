@@ -96,6 +96,8 @@ export interface Props {
     createdAt?: string;
     category?:string;
   };
+  setActiveCard?: (index: number) => void;
+  index?: number;
 }
 
 // Sidebar.tsx interface

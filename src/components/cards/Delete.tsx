@@ -68,7 +68,7 @@ const Delete: React.FC<Props> = ({ props }) => {
           <AlertDialogDescription>
             {successMessage
               ? ""
-              : "This action cannot be undone. This will permanently delete this data and remove it from our servers."}
+              : "This action cannot be undone. This will permanently delete this task and remove it from our servers."}
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>

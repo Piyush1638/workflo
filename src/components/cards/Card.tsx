@@ -10,9 +10,7 @@ const Card: React.FC<Props> = ({ props }) => {
     props.customProperties && Object.keys(props.customProperties).length > 0;
 
   return (
-    <div
-      className="task_card px-[13px] py-[14px] flex flex-col gap-4 border border-[#DEDEDE] rounded-[0.5rem] bg-[#F9F9F9] cursor-grab"
-    >
+    <div className="task_card px-[13px] py-[14px] flex flex-col gap-4 border border-[#DEDEDE] rounded-[0.5rem] bg-[#F9F9F9] ">
       <h3 className="text-[#606060]">{props.title}</h3>
       {props.description && (
         <p className="text-sm text-[#797979]">{props.description}</p>
@@ -44,21 +42,23 @@ const Card: React.FC<Props> = ({ props }) => {
       )}
 
       <div className="flex items-center justify-start gap-2 w-full">
-          <Image
-            src={"/svg/deadline.svg"}
-            alt="Deadline icon"
-            height={24}
-            width={24}
-          />
-          <p className="text-sm text-[#606060]">
-            {props.deadline ? formatDate(props.deadline) : "No Deadline"}
-          </p>
+        <Image
+          src={"/svg/deadline.svg"}
+          alt="Deadline icon"
+          height={24}
+          width={24}
+        />
+        <p className="text-sm text-[#606060]">
+          {props.deadline ? formatDate(props.deadline) : "No Deadline"}
+        </p>
       </div>
       <div className="flex items-center justify-between">
-      <p className="text-sm font-medium text-[#797979]">{formatRelativeTime(props.createdAt!)}</p>
-      <div className="flex items-center gap-2">
-          <EditForm props = {props}/>
-          <Delete props={props}/>
+        <p className="text-sm font-medium text-[#797979]">
+          {formatRelativeTime(props.createdAt!)}
+        </p>
+        <div className="flex items-center gap-2">
+          <EditForm props={props} />
+          <Delete props={props} />
         </div>
       </div>
     </div>

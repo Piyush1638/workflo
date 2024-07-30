@@ -21,17 +21,19 @@ const AddNewButton: React.FC<{
 }> = ({ buttonText, bgColorAndFont, status }) => {
   const userId = useSelector((data: Data) => data.userInfo.id);
   const dispatch = useDispatch(); // Initialize dispatch
-  const [customProperties, setCustomProperties] = useState<CustomProperty[]>(
-    []
-  );
+  const [customProperties, setCustomProperties] = useState<CustomProperty[]>([]);
   const [fields, setFields] = useState<Fields>({
     Title: "",
-    Category: "",
+    Category: status || "", // Set the initial status
     Priority: "",
     Deadline: "",
     Description: "",
   });
   const [isOpen, setIsOpen] = useState(false);
+  const [error, setError] = useState<{ title: boolean; status: boolean }>({
+    title: false,
+    status: false,
+  });
 
   const handleAddCustomProperty = () => {
     setCustomProperties([...customProperties, { key: "", value: "" }]);
@@ -56,6 +58,15 @@ const AddNewButton: React.FC<{
   };
 
   const handleSubmit = async () => {
+    // Check for required fields
+    if (!fields.Title || !fields.Category) {
+      setError({
+        title: !fields.Title,
+        status: !fields.Category,
+      });
+      return;
+    }
+
     const todoData = {
       title: fields.Title,
       description: fields.Description,
@@ -70,7 +81,7 @@ const AddNewButton: React.FC<{
     };
 
     try {
-      const response = await axios.post("/api/submit-to-do", todoData);
+      await axios.post("/api/submit-to-do", todoData);
       dispatch(setTodosUpdated(true)); // Dispatch action to update todosUpdated
       setIsOpen(false);
     } catch (error) {
@@ -104,15 +115,21 @@ const AddNewButton: React.FC<{
               className="text-5xl font-semibold bg-transparent outline-none border-none w-full"
               placeholder="Title"
             />
+            {error.title && (
+              <p className="text-red-500 text-sm">Title is required</p>
+            )}
           </DialogTitle>
         </DialogHeader>
         <div className="flex flex-col gap-4">
           <Field
             iconSrc="/svg/Dialog/status.svg"
             label="Status"
-            value={status ? (fields.Category = status) : fields.Category}
+            value={fields.Category}
             onChange={(value) => handleFieldChange("Category", value)}
           />
+          {error.status && (
+            <p className="text-red-500 text-sm">Status is required</p>
+          )}
           <Field
             iconSrc="/svg/Dialog/priority.svg"
             label="Priority"
