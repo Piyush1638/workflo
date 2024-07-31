@@ -93,7 +93,6 @@ const EditForm: React.FC<Props> = ({ props }) => {
       };
   
       const response = await axios.post("/api/update-todos", userTaskInfoWithMap);
-      console.log(response);
       setUpdateStatus("Task updated successfully!");
       dispatch(setTodosUpdated(true)); // Dispatch action to update global state
     } catch (error: any) {

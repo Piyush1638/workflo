@@ -2,6 +2,34 @@ This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next
 
 ## Getting Started
 
+First install the necessary packages by running command: 
+
+```bash
+npm install
+#or
+yarn install
+#or
+pnpm install
+#or
+bun install
+```
+
+Now make a .env file and paste your environment variables:
+
+```bash
+MONGODB_URI = <Your MONGODB_URI>
+TOKEN_SECRET = <YOUR TOKEN_SECRET>
+DOMAIN = http://localhost:3000 
+#OR
+DOMAIN = <YOUR DOMAIN>
+
+NODEMAILER_USER = <YOUR NODEMAILER_USER ID>
+NODEMAILER_PASSWORD = <YOUR NODEMAILER PASSWORD>
+```
+
+
+Setup Mailtrap to see verification email using nodemailer.
+
 First, run the development server:
 
 ```bash
@@ -13,6 +41,9 @@ pnpm dev
 # or
 bun dev
 ```
+
+
+## 
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 

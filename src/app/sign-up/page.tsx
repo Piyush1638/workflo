@@ -32,7 +32,6 @@ const SignUpPage: React.FC = () => {
     try {
       setLoading(true);
       const response = await axios.post("/api/users/sign-up", user);
-      console.log("Server Response:", response.data);
       setServerResponse(response.data);
 
       if (response.data.success) {

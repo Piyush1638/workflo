@@ -29,7 +29,6 @@ const LoginPage: React.FC = () => {
     try {
       setLoading(true);
       const response = await axios.post("/api/users/sign-in", user);
-      console.log(response.data);
       if (response.data.status === 201) {
         router.push("/");
       }
