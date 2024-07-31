@@ -4,16 +4,25 @@ import Image from "next/image";
 import React from "react";
 import Delete from "./Delete";
 import EditForm from "./EditForm";
+import { handleDrag } from "@/helpers/dragFunctions";
+
+
 
 const Card: React.FC<Props> = ({ props }) => {
   const hasCustomProperties =
     props.customProperties && Object.keys(props.customProperties).length > 0;
 
+ 
+
   return (
-    <div className="task_card px-[13px] py-[14px] flex flex-col gap-4 border border-[#DEDEDE] rounded-[0.5rem] bg-[#F9F9F9] ">
-      <h3 className="text-[#606060]">{props.title}</h3>
+    <div
+      draggable
+      onDrag={(e) => handleDrag({e, props})}
+      className="task_card cursor-grab px-[13px] py-[14px] flex flex-col gap-4 border border-[#DEDEDE] dark:border-[#404040] rounded-[0.5rem] bg-[#F9F9F9] dark:bg-[#232323]"
+    >
+      <h3 className="text-[#606060] dark:text-slate-200">{props.title}</h3>
       {props.description && (
-        <p className="text-sm text-[#797979]">{props.description}</p>
+        <p className="text-sm text-[#797979] dark:text-slate-300">{props.description}</p>
       )}
       {props.priority && (
         <p
@@ -31,7 +40,7 @@ const Card: React.FC<Props> = ({ props }) => {
 
       {/* Render customProperties if there are any */}
       {hasCustomProperties && (
-        <div className="text-sm text-[#606060]">
+        <div className="text-sm text-[#606060] dark:text-slate-300">
           {Object.entries(props.customProperties!).map(([key, value]) => (
             <div key={key} className="flex gap-2">
               <span className="font-semibold">{key}:</span>
@@ -48,7 +57,7 @@ const Card: React.FC<Props> = ({ props }) => {
           height={24}
           width={24}
         />
-        <p className="text-sm text-[#606060]">
+        <p className="text-sm text-[#606060] dark:text-slate-300">
           {props.deadline ? formatDate(props.deadline) : "No Deadline"}
         </p>
       </div>

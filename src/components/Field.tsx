@@ -16,10 +16,10 @@ const Field: React.FC<FieldProps> = ({ iconSrc, label, value, onChange }) => {
           <option value="" disabled>
             Not Selected
           </option>
-          <option value="To Do">To Do</option>
-          <option value="In Progress">In Progress</option>
-          <option value="Under Review">Under Review</option>
-          <option value="Finished">Finished</option>
+          <option value="To Do" className="dark:text-black">To Do</option>
+          <option value="In Progress" className="dark:text-black">In Progress</option>
+          <option value="Under Review" className="dark:text-black">Under Review</option>
+          <option value="Finished" className="dark:text-black">Finished</option>
         </select>
       );
       break;
@@ -33,9 +33,9 @@ const Field: React.FC<FieldProps> = ({ iconSrc, label, value, onChange }) => {
           <option value="" disabled>
             Not Selected
           </option>
-          <option value="Urgent">Urgent</option>
-          <option value="Medium">Medium</option>
-          <option value="Low">Low</option>
+          <option value="Urgent" className="dark:text-black">Urgent</option>
+          <option value="Medium" className="dark:text-black">Medium</option>
+          <option value="Low" className="dark:text-black">Low</option>
         </select>
       );
       break;
@@ -65,7 +65,7 @@ const Field: React.FC<FieldProps> = ({ iconSrc, label, value, onChange }) => {
     <div className="flex items-center justify-start gap-4 mb-4">
       <div className={`flex ${label === "Description" ? "" : "items-center"} gap-2 w-52`}>
         <Image src={iconSrc} alt={label} height={24} width={24} />
-        <span className="ml-2 text-gray-600">{label}</span>
+        <span className="ml-2 text-gray-600 dark:text-slate-400">{label}</span>
       </div>
       {inputElement}
     </div>

@@ -7,6 +7,7 @@ import axios from "axios";
 import { useRouter } from "next/navigation";
 import Loading from "./Loading";
 import { UserInfo, SideBarItemProps } from "@/lib/interfaces/interfaces";
+import { ThemeButton } from "./ThemeButton";
 
 const Sidebar = ({ userInfo }: { userInfo: UserInfo | null }) => {
   const router = useRouter();
@@ -32,7 +33,7 @@ const Sidebar = ({ userInfo }: { userInfo: UserInfo | null }) => {
   };
 
   return (
-    <div className="flex flex-col h-screen min-w-64 bg-white border-r shadow-sm fixed left-0">
+    <div className="flex flex-col h-screen min-w-64 bg-white dark:bg-[#1b1b1b] border-r shadow-sm fixed left-0">
       <div className="flex items-center p-4 gap-2">
         <div className="h-10 w-10 rounded-full flex items-center justify-center p-1 text-2xl border-2 border-gray-400">
           {userInfo?.name[0]}
@@ -51,13 +52,14 @@ const Sidebar = ({ userInfo }: { userInfo: UserInfo | null }) => {
             width={24}
             className="cursor-pointer"
           />
-          <Image
+          {/* <Image
             src="/svg/sidebar/theme.svg"
             alt=""
             height={24}
             width={24}
             className="cursor-pointer"
-          />
+          /> */}
+          <ThemeButton/>
 
           <Image
             src="/svg/sidebar/next.svg"
@@ -72,7 +74,7 @@ const Sidebar = ({ userInfo }: { userInfo: UserInfo | null }) => {
         ) : (
           <button
             onClick={logout}
-            className="bg-[#F4F4F4] text-[#797979] font-normal p-2 rounded"
+            className="bg-[#F4F4F4] dark:bg-black text-[#797979] dark:text-slate-300 font-normal p-2 rounded"
           >
             Logout
           </button>
@@ -86,13 +88,13 @@ const Sidebar = ({ userInfo }: { userInfo: UserInfo | null }) => {
         <SidebarItem icon="/svg/sidebar/teams.svg" label="Teams" />
         <SidebarItem icon="/svg/sidebar/analytics.svg" label="Analytics" />
         <AddNewButton
-          bgColorAndFont="bg-gradient-to-b from-[#4C38C2] to-[#2F2188] shadow shadow-lg justify-center gap-2 mt-2"
+          bgColorAndFont="bg-gradient-to-b from-[#4C38C2] to-[#2F2188] shadow shadow-md dark:shadow-gray-500 justify-center gap-2 mt-2"
           status=""
           buttonText="Create New Task"
         />
       </div>
       <div className="mt-auto p-4">
-        <button className="flex items-center w-full py-2 px-4 bg-gray-100 rounded-md text-left">
+        <button className="flex items-center w-full py-2 px-4 bg-gray-100 dark:bg-black rounded-md text-left">
           <Image
             src="/svg/sidebar/download.svg"
             alt="..."
@@ -113,9 +115,9 @@ export default Sidebar;
 
 const SidebarItem: React.FC<SideBarItemProps> = ({ icon, label }) => {
   return (
-    <button className="flex items-center p-2 rounded-md text-left text-gray-800 hover:bg-gray-100 w-full">
+    <div className="cursor-pointer flex items-center p-2 rounded-md text-left text-gray-800 hover:bg-gray-100 w-full">
       <Image src={icon} alt="..." height={24} width={24} />
-      <span className="ml-4 text-xl leading-6">{label}</span>
-    </button>
+      <span className="ml-4 text-xl leading-6  dark:text-gray-400">{label}</span>
+    </div>
   );
 };

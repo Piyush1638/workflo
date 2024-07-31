@@ -17,7 +17,7 @@ const SignUpPage: React.FC = () => {
   const [serverResponse, setServerResponse] = useState<ServerResponse | null>(
     null
   );
-  const [verifyEmailSent, setVerifyEmailSent] = useState(false);
+  // const [verifyEmailSent, setVerifyEmailSent] = useState(false);
   const [loading, setLoading] = useState(false);
 
   const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -37,8 +37,8 @@ const SignUpPage: React.FC = () => {
 
       if (response.data.success) {
         console.log("User registered successfully");
-        setVerifyEmailSent(true);
-        // router.push("/sign-in");
+        // setVerifyEmailSent(true);
+        router.push("/sign-in");
       } else {
         console.log("Error:", response.data.message);
       }
@@ -75,7 +75,7 @@ const SignUpPage: React.FC = () => {
           Welcome to <span className="text-purple-600">Workflo</span>!
         </h1>
 
-        {!verifyEmailSent ? (
+        {/* {!verifyEmailSent ? ( */}
           <form onSubmit={handleSignUp}>
             <div className="mb-4">
               <input
@@ -137,10 +137,10 @@ const SignUpPage: React.FC = () => {
               </button>
             )}
           </form>
-        ) : (
+        {/* ) : (
           <div className="h-full w-full ">
             <h3 className="text-xl">
-              For testing purpose we are using mailtrap.
+              For testing purpose we are using mailtrap .
             </h3>
             <p className="text-lg text-green-700 font-semibold">
               We have sent you an verification email on your registered email,
@@ -148,7 +148,7 @@ const SignUpPage: React.FC = () => {
               simply login without verification.
             </p>
           </div>
-        )}
+        )} */}
 
         <p className="text-center mt-4">
           Already have an account?{" "}

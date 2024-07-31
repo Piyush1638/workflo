@@ -105,7 +105,7 @@ const EditForm: React.FC<Props> = ({ props }) => {
 
   return (
     <Dialog>
-      <DialogTrigger>
+      <DialogTrigger className="dark:bg-gray-700 dark:p-0.5 rounded-md">
         <Image
           src={"/png/edit.png"}
           alt="Edit icon"
@@ -114,7 +114,7 @@ const EditForm: React.FC<Props> = ({ props }) => {
           className="cursor-pointer"
         />
       </DialogTrigger>
-      <DialogContent className="bg-[#f7f7f7] min-w-fit p-6 rounded-[1rem]">
+      <DialogContent className="bg-[#f7f7f7] dark:bg-[#404040] min-w-fit p-6 rounded-[1rem]">
         <DialogHeader className="mt-6 mb-4">
           <DialogTitle>
             <input

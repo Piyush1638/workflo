@@ -11,7 +11,7 @@ export async function POST(request: NextRequest) {
       title,
       description,
       category,
-      priority,
+      priority = "", // Default to empty string if not provided
       deadline,
       customProperties,
       userId,
@@ -30,7 +30,7 @@ export async function POST(request: NextRequest) {
       title,
       description,
       category,
-      priority,
+      priority, // Save priority even if it's an empty string
       deadline: deadline ? new Date(deadline) : undefined,
       customProperties,
     });

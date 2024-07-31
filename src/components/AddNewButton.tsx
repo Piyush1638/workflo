@@ -58,7 +58,7 @@ const AddNewButton: React.FC<{
   };
 
   const handleSubmit = async () => {
-    // Check for required fields
+    // Check for required fields (excluding priority)
     if (!fields.Title || !fields.Category) {
       setError({
         title: !fields.Title,
@@ -66,12 +66,12 @@ const AddNewButton: React.FC<{
       });
       return;
     }
-
+  
     const todoData = {
       title: fields.Title,
       description: fields.Description,
       category: fields.Category,
-      priority: fields.Priority,
+      priority: fields.Priority || "", // Set to empty string if not provided
       deadline: fields.Deadline,
       customProperties: customProperties.reduce((acc, curr) => {
         acc[curr.key] = curr.value;
@@ -79,7 +79,7 @@ const AddNewButton: React.FC<{
       }, {} as { [key: string]: string }),
       userId: userId,
     };
-
+  
     try {
       await axios.post("/api/submit-to-do", todoData);
       dispatch(setTodosUpdated(true)); // Dispatch action to update todosUpdated
@@ -88,11 +88,12 @@ const AddNewButton: React.FC<{
       console.error("Error submitting todo:", error);
     }
   };
+  
 
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger
-        className={`flex items-center ${bgColorAndFont} p-2 rounded-[8px] text-white shadow-md shadow-gray-400`}
+        className={`flex items-center ${bgColorAndFont} p-2 rounded-[8px] text-white  shadow-md shadow-gray-400`}
         onClick={() => setIsOpen(true)}
       >
         {buttonText}
@@ -103,7 +104,7 @@ const AddNewButton: React.FC<{
           width={24}
         />
       </DialogTrigger>
-      <DialogContent className="bg-[#f7f7f7] min-w-fit p-6 rounded-[1rem]">
+      <DialogContent className="bg-[#f7f7f7] dark:bg-[#404040] min-w-fit p-6 rounded-[1rem]">
         <DialogHeader className="mt-6 mb-4">
           <DialogTitle>
             <input

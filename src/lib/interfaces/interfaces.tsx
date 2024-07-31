@@ -94,10 +94,21 @@ export interface Props {
     customProperties?: Record<string, string>;
     _id?: string;
     createdAt?: string;
-    category?:string;
+    category?: string;
   };
   setActiveCard?: (index: number) => void;
   index?: number;
+}
+
+export interface CardProps {
+  title: string;
+  description?: string;
+  priority?: string;
+  deadline?: string;
+  customProperties?: Record<string, string>;
+  _id?: string;
+  createdAt?: string;
+  category?: string;
 }
 
 // Sidebar.tsx interface
@@ -126,8 +137,12 @@ export interface ServerResponse {
   success?: boolean;
 }
 
-// // signin/page.tsx interface
-// export interface SignInUser {
-//   email: string;
-//   password: string;
-// }
+// TodoColumn.tsx interface
+
+export interface TodoColumnProps {
+  status: string;
+  title: string;
+  buttonText: string;
+  bgColorAndFont: string;
+  userId: string;
+}

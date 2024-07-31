@@ -4,6 +4,7 @@ import React from "react";
 import AddNewButton from "./AddNewButton";
 import { useDispatch, useSelector } from "react-redux";
 import { setSearchQuery } from "@/lib/features/searchSlice";
+import HelpFeedback from "./HelpFeedback";
 
 interface Data{
   userInfo:{
@@ -36,9 +37,12 @@ const GreetingsForms = () => {
 
   return (
     <div className="flex flex-col gap-4">
-      <h1 className="font-semibold text-5xl leading-[3.6rem] font-barlow">
+      <div className="flex items-center justify-between">
+      <h1 className="flex items-center justify-between font-semibold text-5xl leading-[3.6rem] font-barlow">
         {getGreeting()+", "+userName}!
       </h1>
+      <HelpFeedback/>
+      </div>
       {/* Here is the feature cards */}
       <div className="flex gap-2">
         <FeatureCard
@@ -67,10 +71,10 @@ const GreetingsForms = () => {
       {/*Here is Search, Calender View, Automation, Filter, Share and Create New*/}
       <div className="flex justify-between w-full">
         {/* Search */}
-        <div className="w-[12.25rem] p-2 flex gap-2 rounded-lg bg-white border border-[#E9E9E9]">
+        <div className="w-[12.25rem] p-2 flex gap-2 rounded-lg bg-white border border-[#E9E9E9] dark:border-[#404040] dark:bg-[#404040]">
           <input
             type="text"
-            className="bg-none outline-none w-full"
+            className="bg-transparent outline-none w-full"
             placeholder="Search"
             value={searchQuery}
             onChange={handleSearchChange}
@@ -110,11 +114,11 @@ const FeatureCard: React.FC<FeatureCardProps> = ({
   height,
   width,
 }) => (
-  <div className="flex items-center flex-row justify-start gap-4 rounded-lg p-4 border border-[#F4F4F4] bg-[#ffffff]">
+  <div className="flex items-center flex-row justify-start gap-4 rounded-lg p-4 border border-[#F4F4F4] dark:border-gray-500 bg-[#ffffff] dark:bg-[#404040]">
     <Image src={img} alt="title" height={height} width={width} />
     <div className="flex flex-col gap-1">
-      <h3 className="font-semibold text-[#757575]">{title}</h3>
-      <p className="text-sm font-normal text-[#868686]">{description}</p>
+      <h3 className="font-semibold text-[#757575] dark:text-gray-300">{title}</h3>
+      <p className="text-sm font-normal text-[#868686] dark:text-slate-300">{description}</p>
     </div>
   </div>
 );
@@ -125,7 +129,7 @@ interface FunctionalityProps {
 }
 
 const Functionalities: React.FC<FunctionalityProps> = ({ name, icon }) => (
-  <button className="flex items-center bg-[#F4F4F4] gap-[14px] p-2 rounded-[4px]">
+  <button className="flex items-center bg-[#F4F4F4] dark:bg-[#121212] gap-[14px] p-2 rounded-[4px]">
     <p className="text-[#797979] font-normal leading-5">{name}</p>
     <Image src={icon} alt={name} height={24} width={24} />
   </button>
