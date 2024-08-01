@@ -4,17 +4,15 @@ import React, { useState } from "react";
 import Card from "../cards/Card";
 import Image from "next/image";
 import AddNewButton from "../AddNewButton";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "@/lib/store";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
-import { handleOnDragOver, handleOnDrop } from "@/helpers/dragFunctions";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import axios from "axios";
+import { setTodosUpdated } from "@/lib/features/todoSlice";
+import { DragProps, dragTask } from "@/helpers/dragFunctions";
 
 interface TodoColumnProps {
-  status: string;
+  status: TodoStatus;
   title: string;
   buttonText: string;
   bgColorAndFont: string;
@@ -24,6 +22,8 @@ interface TodoColumnProps {
 type TodoStatus = "To Do" | "In Progress" | "Under Review" | "Finished";
 type SortMode = "priority" | "createdAt" | "deadline";
 
+const priorityOrder = ["Urgent", "Medium", "Low", ""];
+
 const TodoColumn: React.FC<TodoColumnProps> = ({
   status,
   title,
@@ -32,80 +32,92 @@ const TodoColumn: React.FC<TodoColumnProps> = ({
   userId,
 }) => {
   const [sortMode, setSortMode] = useState<SortMode>("priority");
-  const [onDropEnter, setOnDropEnter] = useState(false);
+  const dispatch = useDispatch();
 
-  const todos = useSelector(
-    (state: RootState) => state.todos[status as TodoStatus]
-  );
-  const searchQuery = useSelector(
-    (state: { search: { query: string } }) => state.search.query
-  );
+  const todos = useSelector((state: RootState) => state.todos[status]);
+  const searchQuery = useSelector((state: RootState) => state.search.query.toLowerCase());
 
-  // Filter todos based on search query
-  const filteredTodos = todos.filter(
-    (todo: any) =>
-      todo.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      todo.description?.toLowerCase().includes(searchQuery.toLowerCase())
-  );
+  const filterTodos = (todos: any[]) => 
+    todos.filter(todo => 
+      todo.title.toLowerCase().includes(searchQuery) ||
+      todo.description?.toLowerCase().includes(searchQuery)
+    );
 
-  // Sorting logic
   const sortTodos = (a: any, b: any) => {
-    if (sortMode === "priority") {
-      const priorityOrder = ["Urgent", "Medium", "Low", ""];
-      return (
-        priorityOrder.indexOf(a.priority) - priorityOrder.indexOf(b.priority)
-      );
-    } else if (sortMode === "createdAt") {
-      return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
-    } else if (sortMode === "deadline") {
-      return new Date(a.deadline).getTime() - new Date(b.deadline).getTime();
+    switch (sortMode) {
+      case "priority":
+        return priorityOrder.indexOf(a.priority) - priorityOrder.indexOf(b.priority);
+      case "createdAt":
+        return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
+      case "deadline":
+        return new Date(a.deadline).getTime() - new Date(b.deadline).getTime();
+      default:
+        return 0;
     }
-    return 0;
   };
 
-  // Apply sorting
-  const sortedTodos = filteredTodos.sort(sortTodos);
+  const sortedTodos = filterTodos(todos).sort(sortTodos);
 
-  const handleSortButtonClick = (mode: SortMode) => {
-    setSortMode(mode);
+  const handleSortButtonClick = (mode: SortMode) => setSortMode(mode);
+
+  const updateCategoryAfterDragNDrop = async (userId: string, category: string) => {
+    if (category === dragTask.category) return;
+    try {
+      await axios.post("/api/update-todo-dragdrop", {
+        userId,
+        taskId: dragTask._id,
+        category,
+      });
+    } catch (error: any) {
+      console.error("Error updating todo category:", error.response?.data);
+    }
   };
 
-  const showNoResultsMessage =
-    searchQuery.length > 0 && filteredTodos.length === 0;
+  const handleOnDrop = async ({ e, userId }: DragProps) => {
+    e.preventDefault();
+    const status = e.currentTarget.getAttribute("data-status");
+    
+    if (status && userId) {
+      await updateCategoryAfterDragNDrop(userId, status);
+      dispatch(setTodosUpdated(true));
+    } else {
+      console.error("No status found for drop target or userId is undefined");
+    }
+  };
 
   return (
     <div
       data-status={status}
       onDrop={(e) => handleOnDrop({ e, userId })}
-      onDragOver={(e) => handleOnDragOver(e)}
+      onDragOver={(e) => e.preventDefault()}
       className="flex flex-col gap-4"
     >
       <div className="flex items-start justify-between">
         <h3 className="text-[#555555] dark:text-slate-300 text-xl">{title}</h3>
         <Popover>
-          <PopoverTrigger className="">
+          <PopoverTrigger>
             <div className="dark:bg-gray-800 rounded-md dark:px-0.5">
               <Image src={"/svg/more.svg"} alt="Sort" height={24} width={24} />
             </div>
           </PopoverTrigger>
           <PopoverContent className="w-40 p-1">
-            <div className="flex flex-col gap-2 justify-start text-start">
-              <h3 className="font-semibold font-barlow px-1">Sort</h3>
+            <div className="flex flex-col gap-2 text-start">
+              <h3 className="font-semibold px-1">Sort</h3>
               <hr />
               <button
-                className="text-start hover:bg-gray-200 dark:hover:bg-[#404040] p-1 rounded-md "
+                className="hover:bg-gray-200 dark:hover:bg-[#404040] p-1 rounded-md"
                 onClick={() => handleSortButtonClick("priority")}
               >
                 By Priority
               </button>
               <button
-                className="text-start hover:bg-gray-200 dark:hover:bg-[#404040] p-1 rounded-md "
+                className="hover:bg-gray-200 dark:hover:bg-[#404040] p-1 rounded-md"
                 onClick={() => handleSortButtonClick("createdAt")}
               >
                 Recent
               </button>
               <button
-                className="text-start hover:bg-gray-200 dark:hover:bg-[#404040] p-1 rounded-md "
+                className="hover:bg-gray-200 dark:hover:bg-[#404040] p-1 rounded-md"
                 onClick={() => handleSortButtonClick("deadline")}
               >
                 By Deadline
@@ -116,13 +128,9 @@ const TodoColumn: React.FC<TodoColumnProps> = ({
       </div>
       <div className="flex flex-col gap-4">
         {sortedTodos.length > 0 ? (
-          sortedTodos.map((item: any, index: number) => (
-            <Card props={item} key={index} />
-          ))
-        ) : showNoResultsMessage ? (
-          <p className="text-gray-600 dark:text-gray-200">
-            No tasks match your search criteria.
-          </p>
+          sortedTodos.map((item: any, index: number) => <Card props={item} key={index} />)
+        ) : searchQuery.length > 0 ? (
+          <p className="text-gray-600 dark:text-gray-200">No tasks match your search criteria.</p>
         ) : null}
       </div>
       <AddNewButton
