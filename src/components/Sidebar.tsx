@@ -33,7 +33,7 @@ const Sidebar = ({ userInfo }: { userInfo: UserInfo | null }) => {
   };
 
   return (
-    <div className="flex flex-col h-screen min-w-64 bg-white dark:bg-[#1b1b1b] border-r shadow-sm fixed left-0">
+    <div className="flex  flex-col h-screen min-w-64 bg-white dark:bg-[#1b1b1b] lg:border-r shadow-sm fixed left-0">
       <div className="flex items-center p-4 gap-2">
         <div className="h-10 w-10 rounded-full flex items-center justify-center p-1 text-2xl border-2 border-gray-400">
           {userInfo?.name[0]}
@@ -74,7 +74,7 @@ const Sidebar = ({ userInfo }: { userInfo: UserInfo | null }) => {
         ) : (
           <button
             onClick={logout}
-            className="bg-[#F4F4F4] dark:bg-black text-[#797979] dark:text-slate-300 font-normal p-2 rounded"
+            className="bg-[#F4F4F4] hover:bg-gray-200 dark:bg-black text-[#797979] dark:text-slate-300 font-normal p-2 rounded"
           >
             Logout
           </button>

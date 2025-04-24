@@ -10,6 +10,7 @@ import type { AppDispatch } from "@/lib/store";
 import { useDispatch, useSelector } from "react-redux";
 import { UserInfo, TodoState } from "@/lib/interfaces/interfaces";
 import Board from "@/components/Board";
+import ResponsiveAside from "@/components/ResponsiveAside";
 
 const Home = () => {
   const dispatch: AppDispatch = useDispatch();
@@ -53,14 +54,21 @@ const Home = () => {
 
   return (
     <main className="flex min-h-screen bg-[#f7f7f7] dark:bg-black">
-      <Sidebar userInfo={userInfo} />
-      <section className="p-4 overflow-y-auto ml-64 gap-4 flex flex-col">
-        <GreetingsForms />
-        {userInfo ? (
-          <Board />
-        ) : (
-          <div className="text-center">No user info available</div>
-        )}
+      <div className="lg:flex hidden">
+        <Sidebar userInfo={userInfo} />
+      </div>
+      <section className="w-full h-full">
+        <div className="lg:hidden flex w-full items-start justify-start">
+          <ResponsiveAside userInfo={userInfo} />
+        </div>
+        <div className="p-4 overflow-y-auto lg:ml-64 gap-4 flex flex-col">
+          <GreetingsForms />
+          {userInfo ? (
+            <Board />
+          ) : (
+            <div className="text-center">No user info available</div>
+          )}
+        </div>
       </section>
     </main>
   );

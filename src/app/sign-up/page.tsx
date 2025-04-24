@@ -70,7 +70,7 @@ const SignUpPage: React.FC = () => {
   return (
     <div className="flex items-center justify-center h-screen bg-gradient-to-t from-[#AFA3FF] to-white">
       <div className="bg-white p-8 rounded shadow-md max-w-lg w-full mx-4">
-        <h1 className="text-2xl font-bold text-center mb-6">
+        <h1 className="text-2xl font-bold text-center mb-6 text-black">
           Welcome to <span className="text-purple-600">Workflo</span>!
         </h1>
 
@@ -82,7 +82,7 @@ const SignUpPage: React.FC = () => {
                 value={user.name}
                 name="name"
                 onChange={onChange}
-                className="w-full p-2 border rounded mb-2 outline-none"
+                className="w-full p-2 border rounded mb-2 outline-none text-black bg-white"
                 placeholder="Name"
                 required
               />
@@ -93,7 +93,7 @@ const SignUpPage: React.FC = () => {
                 value={user.email}
                 name="email"
                 onChange={onChange}
-                className="w-full p-2 border rounded mb-2 outline-none"
+                className="w-full p-2 border rounded mb-2 outline-none text-black bg-white"
                 placeholder="Email"
                 required
               />
@@ -104,7 +104,7 @@ const SignUpPage: React.FC = () => {
                 name="password"
                 value={user.password}
                 onChange={onChange}
-                className="w-full p-2 border rounded outline-none"
+                className="w-full p-2 border rounded outline-none  text-black bg-white"
                 placeholder="Password"
                 required
               />
@@ -149,7 +149,7 @@ const SignUpPage: React.FC = () => {
           </div>
         )} */}
 
-        <p className="text-center mt-4">
+        <p className="text-center mt-4 text-black">
           Already have an account?{" "}
           <Link href="/sign-in" className="text-[#0054A1]">
             Log in.

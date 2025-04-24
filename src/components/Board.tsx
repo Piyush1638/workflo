@@ -60,7 +60,7 @@ const Board: React.FC = () => {
       <div
         className={`rounded-[0.5rem] p-4 ${
           isTodosEmpty ? "flex items-center justify-center" : "grid"
-        } grid-cols-4 gap-4 w-full bg-[#FFFFFF] dark:bg-[#404040]`}
+        } grid-cols-2 md:grid-col-3 lg:grid-cols-4 gap-4 w-full bg-[#FFFFFF] dark:bg-[#404040]`}
       >
         {loading ? (
           <Loading />
@@ -69,7 +69,7 @@ const Board: React.FC = () => {
             <h3 className="text-xl font-barlow font-semibold mb-4">
               No tasks created yet
             </h3>
-            <p className="text-gray-600">
+            <p className="text-gray-600 dark:text-gray-300">
               It looks like you haven&apos;t created any tasks. Get started by
               adding your first task and stay organized!
             </p>
