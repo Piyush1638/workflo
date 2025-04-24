@@ -72,7 +72,7 @@ const GreetingsForms = () => {
       {/*Here is Search, Calender View, Automation, Filter, Share and Create New*/}
       <div className="flex lg:flex-row flex-col gap-2 justify-between w-full">
         {/* Search */}
-        <div className="w-full lg:w-[12.25rem] h-[50px] p-2 flex gap-2 rounded-lg bg-white border border-[#E9E9E9] dark:border-[#404040] dark:bg-[#404040]">
+        <div className="w-full lg:w-1/3 h-[50px] p-2 flex gap-2 rounded-lg bg-white border border-[#E9E9E9] dark:border-[#404040] dark:bg-[#404040]">
           <input
             type="text"
             className="bg-transparent outline-none w-full"
